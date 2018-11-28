@@ -1190,8 +1190,8 @@ void runCommand(const std::string& strCommand)
 {
     if (strCommand.empty()) return;
 #if defined(__IOS)
-    // NOOP
     int nErr = 0;
+    LogPrintf("runCommand error: system(%s) isn't available for iOS", strCommand);
 #elif defined(WIN32)
     int nErr = ::_wsystem(std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>,wchar_t>().from_bytes(strCommand).c_str());
 #else
