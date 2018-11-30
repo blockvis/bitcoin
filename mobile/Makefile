@@ -143,17 +143,17 @@ install:
 
 ios-framework: ios-lipo
 	mkdir -p $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Versions/A/Headers
-	touch $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Versions/A/Headers/BitcoinCore.h
+	cp -a $(MAKEFILE_DIR)/ios/support/BitcoinCore.h $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Versions/A/Headers/BitcoinCore.h
 	cp -a $(PROJ_ROOT_DIR)/build/ios-lipo/include/* $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Versions/A/Headers
 	cp -a $(PROJ_ROOT_DIR)/build/ios-lipo/lib/libbitcoincore.a $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Versions/A/BitcoinCore
 	mkdir -p $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Versions/A/Resources
-	touch $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Versions/A/Resources/Info.plist
+	cp -a $(MAKEFILE_DIR)/ios/support/Info.plist $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Versions/A/Resources/Info.plist
 	cd $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Versions/ && ln -sfh A Current
 	cd $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/ && ln -sfh Versions/Current/Headers Headers
 	cd $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/ && ln -sfh Versions/Current/Resources Resources
 	cd $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/ && ln -sfh Versions/Current/BitcoinCore BitcoinCore
 	mkdir -p $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Modules
-	touch $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Modules/module.modulemap
+	cp -a $(MAKEFILE_DIR)/ios/support/module.modulemap $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Modules/module.modulemap
 
 ios-lipo:
 	mkdir -p $(PROJ_ROOT_DIR)/build/$@/{include,lib}
