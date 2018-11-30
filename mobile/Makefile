@@ -145,7 +145,16 @@ ios-framework: ios-lipo
 
 
 ios-lipo:
-	# lipo ${LIB_PATHS[@]} -create -output
+	mkdir -p $(PROJ_ROOT_DIR)/build/$@/{include,lib}
+	cp -a $(PROJ_ROOT_DIR)/build/ios-device/include/* $(PROJ_ROOT_DIR)/build/$@/include
+	cd $(PROJ_ROOT_DIR)/build/ios-device/lib/ && \
+		libtool -static -o libbitcoincore.a libbitcoin_common.a libbitcoin_consensus.a libbitcoin_server.a libbitcoin_util.a
+	cd $(PROJ_ROOT_DIR)/build/ios-simulator/lib/ && \
+		libtool -static -o libbitcoincore.a libbitcoin_common.a libbitcoin_consensus.a libbitcoin_server.a libbitcoin_util.a
+	lipo \
+		$(PROJ_ROOT_DIR)/build/ios-device/lib/libbitcoincore.a \
+		$(PROJ_ROOT_DIR)/build/ios-simulator/lib/libbitcoincore.a \
+				-create -output $(PROJ_ROOT_DIR)/build/$@/lib/libbitcoincore.a
 
 
 android:
