@@ -28,12 +28,14 @@ all: macos ios android
 prerequisites:
 	brew install automake berkeley-db4 libtool boost miniupnpc openssl pkg-config protobuf python qt libevent qrencode
 
+
 #
 # External prerequisites:
 #		Boost for iOS: https://github.com/danoli3/ofxiOSBoost
 #		Openssl for iOS: https://github.com/krzyzanowskim/OpenSSL
 #		The libevent build script for iOS: https://gist.github.com/ursachec/6237515
 #
+
 
 macos:
 	cd $(PROJ_ROOT_DIR) && \
@@ -127,8 +129,13 @@ ios-simulator:
 install:
 	make -j4 -C $(PROJ_ROOT_DIR) install
 	cp $(PROJ_ROOT_DIR)/src/*.a $(PROJ_ROOT_DIR)/src/*.la $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/lib/
+	cp $(PROJ_ROOT_DIR)/src/secp256k1/.libs/libsecp256k1.a $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/lib/
+	cp $(PROJ_ROOT_DIR)/src/leveldb/libleveldb.a $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/lib/
+	cp $(PROJ_ROOT_DIR)/src/leveldb/libleveldb_sse42.a $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/lib/
+	cp $(PROJ_ROOT_DIR)/src/leveldb/libmemenv.a $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/lib/
 	find  $(PROJ_ROOT_DIR)/src/ -type f -name "*.h" -maxdepth 1 -mindepth 1 -exec rsync -aqz {} $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/include/ \;
 	find  $(PROJ_ROOT_DIR)/src/consensus -type f -name "*.h" -maxdepth 1 -mindepth 1 -exec rsync -aqz {} $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/include/consensus/ \;
+	find  $(PROJ_ROOT_DIR)/src/crypto -type f -name "*.h" -maxdepth 1 -mindepth 1 -exec rsync -aqz {} $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/include/crypto/ \;
 	find  $(PROJ_ROOT_DIR)/src/compat -type f -name "*.h" -maxdepth 1 -mindepth 1 -exec rsync -aqz {} $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/include/compat/ \;
 	find  $(PROJ_ROOT_DIR)/src/util -type f -name "*.h" -maxdepth 1 -mindepth 1 -exec rsync -aqz {} $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/include/util/ \;
 	find  $(PROJ_ROOT_DIR)/src/config -type f -name "*.h" -maxdepth 1 -mindepth 1 -exec rsync -aqz {} $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/include/config/ \;
@@ -139,6 +146,7 @@ install:
 	find  $(PROJ_ROOT_DIR)/src/rpc -type f -name "*.h" -maxdepth 1 -mindepth 1 -exec rsync -aqz {} $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/include/rpc/ \;
 	find  $(PROJ_ROOT_DIR)/src/policy -type f -name "*.h" -maxdepth 1 -mindepth 1 -exec rsync -aqz {} $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/include/policy/ \;
 	find  $(PROJ_ROOT_DIR)/src/interfaces -type f -name "*.h" -maxdepth 1 -mindepth 1 -exec rsync -aqz {} $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/include/interfaces/ \;
+	find  $(PROJ_ROOT_DIR)/src/univalue/include -type f -name "*.h" -maxdepth 1 -mindepth 1 -exec rsync -aqz {} $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/include/ \;
 
 
 ios-framework: ios-lipo
@@ -155,18 +163,29 @@ ios-framework: ios-lipo
 	mkdir -p $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Modules
 	cp -a $(MAKEFILE_DIR)/ios/support/module.modulemap $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Modules/module.modulemap
 
-ios-lipo:
+ios-lipo: ios-lipo-3rd
 	mkdir -p $(PROJ_ROOT_DIR)/build/$@/{include,lib}
 	cp -a $(PROJ_ROOT_DIR)/build/ios-device/include/* $(PROJ_ROOT_DIR)/build/$@/include
 	cd $(PROJ_ROOT_DIR)/build/ios-device/lib/ && \
-		libtool -static -o libbitcoincore.a libbitcoin_common.a libbitcoin_consensus.a libbitcoin_server.a libbitcoin_util.a
+		libtool -static -o libbitcoincore.a libbitcoin_common.a libbitcoin_consensus.a libbitcoin_server.a libbitcoin_util.a \
+				libsecp256k1.a libleveldb.a libleveldb_sse42.a libmemenv.a libbitcoinconsensus.a libboost.a libcrypto.a libssl.a
 	cd $(PROJ_ROOT_DIR)/build/ios-simulator/lib/ && \
-		libtool -static -o libbitcoincore.a libbitcoin_common.a libbitcoin_consensus.a libbitcoin_server.a libbitcoin_util.a
+		libtool -static -o libbitcoincore.a libbitcoin_common.a libbitcoin_consensus.a libbitcoin_server.a libbitcoin_util.a \
+				libsecp256k1.a libleveldb.a libleveldb_sse42.a libmemenv.a libbitcoinconsensus.a libboost.a libcrypto.a libssl.a
 	lipo \
 		$(PROJ_ROOT_DIR)/build/ios-device/lib/libbitcoincore.a \
 		$(PROJ_ROOT_DIR)/build/ios-simulator/lib/libbitcoincore.a \
 				-create -output $(PROJ_ROOT_DIR)/build/$@/lib/libbitcoincore.a
 		-@file $(PROJ_ROOT_DIR)/build/$@/lib/libbitcoincore.a
+
+
+ios-lipo-3rd:
+	lipo $(PROJ_ROOT_DIR)/../boost/ofxiOSBoost/libs/boost/ios/libboost.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libboost.a
+	lipo $(PROJ_ROOT_DIR)/../boost/ofxiOSBoost/libs/boost/ios/libboost.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libboost.a
+	lipo $(PROJ_ROOT_DIR)/../openssl/OpenSSL/lib-ios/libcrypto.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libcrypto.a
+	lipo $(PROJ_ROOT_DIR)/../openssl/OpenSSL/lib-ios/libcrypto.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libcrypto.a
+	lipo $(PROJ_ROOT_DIR)/../openssl/OpenSSL/lib-ios/libssl.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libssl.a
+	lipo $(PROJ_ROOT_DIR)/../openssl/OpenSSL/lib-ios/libssl.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libssl.a
 
 
 android:
@@ -177,7 +196,7 @@ clean:
 	-@rm -rf $(PROJ_ROOT_DIR)/build 2>&1 >/dev/null || true
 
 
-.PHONY: all clean install macos ios ios-device ios-simulator ios-lipo ios-framework android
+.PHONY: all clean install macos ios ios-device ios-simulator ios-lipo ios-lipo-3rd ios-framework android
 
 
 .SILENT: clean
