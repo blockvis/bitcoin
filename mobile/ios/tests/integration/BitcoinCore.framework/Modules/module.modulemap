@@ -1,0 +1,4 @@
+module BitcoinCore {
+    header "Headers/BitcoinCore.h"
+    export *
+}

@@ -133,6 +133,7 @@ install:
 	cp $(PROJ_ROOT_DIR)/src/leveldb/libleveldb.a $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/lib/
 	cp $(PROJ_ROOT_DIR)/src/leveldb/libleveldb_sse42.a $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/lib/
 	cp $(PROJ_ROOT_DIR)/src/leveldb/libmemenv.a $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/lib/
+	cp $(PROJ_ROOT_DIR)/src/univalue/.libs/libunivalue.a $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/lib/
 	find  $(PROJ_ROOT_DIR)/src/ -type f -name "*.h" -maxdepth 1 -mindepth 1 -exec rsync -aqz {} $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/include/ \;
 	find  $(PROJ_ROOT_DIR)/src/consensus -type f -name "*.h" -maxdepth 1 -mindepth 1 -exec rsync -aqz {} $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/include/consensus/ \;
 	find  $(PROJ_ROOT_DIR)/src/crypto -type f -name "*.h" -maxdepth 1 -mindepth 1 -exec rsync -aqz {} $(PROJ_ROOT_DIR)/build/$(INSTALL_TARGET)/include/crypto/ \;
@@ -168,10 +169,14 @@ ios-lipo: ios-lipo-3rd
 	cp -a $(PROJ_ROOT_DIR)/build/ios-device/include/* $(PROJ_ROOT_DIR)/build/$@/include
 	cd $(PROJ_ROOT_DIR)/build/ios-device/lib/ && \
 		libtool -static -o libbitcoincore.a libbitcoin_common.a libbitcoin_consensus.a libbitcoin_server.a libbitcoin_util.a \
-				libsecp256k1.a libleveldb.a libleveldb_sse42.a libmemenv.a libbitcoinconsensus.a libboost.a libcrypto.a libssl.a
+				libsecp256k1.a libleveldb.a libleveldb_sse42.a libmemenv.a libbitcoinconsensus.a libboost.a libcrypto.a libssl.a \
+				libevent.a libevent_core.a libevent_extra.a libevent_pthreads.a \
+				libunivalue.a
 	cd $(PROJ_ROOT_DIR)/build/ios-simulator/lib/ && \
 		libtool -static -o libbitcoincore.a libbitcoin_common.a libbitcoin_consensus.a libbitcoin_server.a libbitcoin_util.a \
-				libsecp256k1.a libleveldb.a libleveldb_sse42.a libmemenv.a libbitcoinconsensus.a libboost.a libcrypto.a libssl.a
+				libsecp256k1.a libleveldb.a libleveldb_sse42.a libmemenv.a libbitcoinconsensus.a libboost.a libcrypto.a libssl.a \
+				libevent.a libevent_core.a libevent_extra.a libevent_pthreads.a \
+				libunivalue.a
 	lipo \
 		$(PROJ_ROOT_DIR)/build/ios-device/lib/libbitcoincore.a \
 		$(PROJ_ROOT_DIR)/build/ios-simulator/lib/libbitcoincore.a \
@@ -186,6 +191,14 @@ ios-lipo-3rd:
 	lipo $(PROJ_ROOT_DIR)/../openssl/OpenSSL/lib-ios/libcrypto.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libcrypto.a
 	lipo $(PROJ_ROOT_DIR)/../openssl/OpenSSL/lib-ios/libssl.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libssl.a
 	lipo $(PROJ_ROOT_DIR)/../openssl/OpenSSL/lib-ios/libssl.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libssl.a
+	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libevent.a
+	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libevent.a
+	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent_core.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libevent_core.a
+	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent_core.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libevent_core.a
+	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent_extra.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libevent_extra.a
+	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent_extra.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libevent_extra.a
+	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent_pthreads.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libevent_pthreads.a
+	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent_pthreads.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libevent_pthreads.a
 
 
 android:
