@@ -22,6 +22,9 @@ EVENT_IOS_LIBS:=-L$(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib -levent -levent
 EVENT_PTHREADS_IOS_INCLUDES:=-I$(PROJ_ROOT_DIR)/../libevent/libevent-dest-include/include
 EVENT_PTHREADS_IOS_LIBS:=-L$(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib -levent_pthreads
 
+BDB_IOS_CFLAGS:=-I$(PROJ_ROOT_DIR)/../berkeleydb/db-18.1.25/build_unix/build-ios/include
+BDB_IOS_LIBS:=-L$(PROJ_ROOT_DIR)/../berkeleydb/db-18.1.25/build_unix/build-ios/lib -ldb_cxx-18.1 -ldb-18.1
+
 all: macos ios android
 
 
@@ -34,6 +37,7 @@ prerequisites:
 #		Boost for iOS: https://github.com/danoli3/ofxiOSBoost
 #		Openssl for iOS: https://github.com/krzyzanowskim/OpenSSL
 #		The libevent build script for iOS: https://gist.github.com/ursachec/6237515
+# 	BerkeleyDB for iOS: https://docs.oracle.com/cd/E17076_05/html/installation/build_unix_iphone.html
 #
 
 
@@ -43,7 +47,7 @@ macos:
 			CXX=clang++ \
 			./configure \
 				--prefix=$(PROJ_ROOT_DIR)/build/$@ \
-				--disable-wallet --without-gui --with-daemon=yes --with-utils=no \
+				--without-gui --with-daemon=yes --with-utils=no \
         --disable-tests --disable-bench --enable-asm=no \
         --enable-shared=no --enable-static=yes --with-incompatible-bdb \
         --disable-hardening --disable-ccache --disable-zmq --disable-man --without-miniupnpc \
@@ -73,7 +77,7 @@ ios-device:
 				--with-boost-filesystem=boost \
 				--with-boost-thread=boost \
 				--with-boost-chrono=boost \
-				--disable-wallet --without-gui --with-daemon=yes --with-utils=no \
+				--without-gui --with-daemon=yes --with-utils=no \
         --disable-tests --disable-bench --enable-asm=no \
         --enable-shared=no --enable-static=yes --with-incompatible-bdb \
         --disable-hardening --disable-ccache --disable-zmq --disable-man --without-miniupnpc \
@@ -85,7 +89,9 @@ ios-device:
 				EVENT_CFLAGS="$(EVENT_IOS_INCLUDES)" \
 				EVENT_LIBS="$(EVENT_IOS_LIBS)" \
 				EVENT_PTHREADS_CFLAGS="$(EVENT_PTHREADS_IOS_INCLUDES)" \
-				EVENT_PTHREADS_LIBS="$(EVENT_PTHREADS_IOS_LIBS)"
+				EVENT_PTHREADS_LIBS="$(EVENT_PTHREADS_IOS_LIBS)" \
+				BDB_CFLAGS="$(BDB_IOS_CFLAGS)" \
+				BDB_LIBS="$(BDB_IOS_LIBS)"
 	-@$(MAKE) -C $(PROJ_ROOT_DIR) clean 2>&1 >/dev/null || true
 	make -j4 -C $(PROJ_ROOT_DIR)
 	make INSTALL_TARGET=$@ install
@@ -108,7 +114,7 @@ ios-simulator:
 				--with-boost-filesystem=boost \
 				--with-boost-thread=boost \
 				--with-boost-chrono=boost \
-				--disable-wallet --without-gui --with-daemon=yes --with-utils=no \
+				--without-gui --with-daemon=yes --with-utils=no \
         --disable-tests --disable-bench --enable-asm=no \
         --enable-shared=no --enable-static=yes --with-incompatible-bdb \
         --disable-hardening --disable-ccache --disable-zmq --disable-man --without-miniupnpc \
@@ -120,7 +126,9 @@ ios-simulator:
 				EVENT_CFLAGS="$(EVENT_IOS_INCLUDES)" \
 				EVENT_LIBS="$(EVENT_IOS_LIBS)" \
 				EVENT_PTHREADS_CFLAGS="$(EVENT_PTHREADS_IOS_INCLUDES)" \
-				EVENT_PTHREADS_LIBS="$(EVENT_PTHREADS_IOS_LIBS)"
+				EVENT_PTHREADS_LIBS="$(EVENT_PTHREADS_IOS_LIBS)" \
+				BDB_CFLAGS="$(BDB_IOS_CFLAGS)" \
+				BDB_LIBS="$(BDB_IOS_LIBS)"
 	-@$(MAKE) -C $(PROJ_ROOT_DIR) clean 2>&1 >/dev/null || true
 	make -j4 -C $(PROJ_ROOT_DIR)
 	make INSTALL_TARGET=$@ install
@@ -168,15 +176,15 @@ ios-lipo: ios-lipo-3rd
 	mkdir -p $(PROJ_ROOT_DIR)/build/$@/{include,lib}
 	cp -a $(PROJ_ROOT_DIR)/build/ios-device/include/* $(PROJ_ROOT_DIR)/build/$@/include
 	cd $(PROJ_ROOT_DIR)/build/ios-device/lib/ && \
-		libtool -static -o libbitcoincore.a libbitcoin_common.a libbitcoin_consensus.a libbitcoin_server.a libbitcoin_util.a \
+		libtool -static -o libbitcoincore.a libbitcoin_common.a libbitcoin_consensus.a libbitcoin_server.a libbitcoin_util.a libbitcoin_wallet.a \
 				libsecp256k1.a libleveldb.a libleveldb_sse42.a libmemenv.a libbitcoinconsensus.a libboost.a libcrypto.a libssl.a \
 				libevent.a libevent_core.a libevent_extra.a libevent_pthreads.a \
-				libunivalue.a
+				libunivalue.a libdb-18.1.a libdb_cxx-18.1.a
 	cd $(PROJ_ROOT_DIR)/build/ios-simulator/lib/ && \
-		libtool -static -o libbitcoincore.a libbitcoin_common.a libbitcoin_consensus.a libbitcoin_server.a libbitcoin_util.a \
+		libtool -static -o libbitcoincore.a libbitcoin_common.a libbitcoin_consensus.a libbitcoin_server.a libbitcoin_util.a libbitcoin_wallet.a \
 				libsecp256k1.a libleveldb.a libleveldb_sse42.a libmemenv.a libbitcoinconsensus.a libboost.a libcrypto.a libssl.a \
 				libevent.a libevent_core.a libevent_extra.a libevent_pthreads.a \
-				libunivalue.a
+				libunivalue.a libdb-18.1.a libdb_cxx-18.1.a
 	lipo \
 		$(PROJ_ROOT_DIR)/build/ios-device/lib/libbitcoincore.a \
 		$(PROJ_ROOT_DIR)/build/ios-simulator/lib/libbitcoincore.a \
@@ -199,7 +207,11 @@ ios-lipo-3rd:
 	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent_extra.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libevent_extra.a
 	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent_pthreads.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libevent_pthreads.a
 	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent_pthreads.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libevent_pthreads.a
-
+	lipo $(PROJ_ROOT_DIR)/../berkeleydb/db-18.1.25/build_unix/build-ios/lib/libdb-18.1.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libdb-18.1.a
+	lipo $(PROJ_ROOT_DIR)/../berkeleydb/db-18.1.25/build_unix/build-ios/lib/libdb-18.1.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libdb-18.1.a
+	lipo $(PROJ_ROOT_DIR)/../berkeleydb/db-18.1.25/build_unix/build-ios/lib/libdb_cxx-18.1.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libdb_cxx-18.1.a
+	lipo $(PROJ_ROOT_DIR)/../berkeleydb/db-18.1.25/build_unix/build-ios/lib/libdb_cxx-18.1.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libdb_cxx-18.1.a
+	
 
 android:
 

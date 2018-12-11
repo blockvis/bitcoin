@@ -51,7 +51,7 @@
 /* #undef ENABLE_SSE41 */
 
 /* Define to 1 to enable wallet functions */
-/* #undef ENABLE_WALLET */
+#define ENABLE_WALLET 1
 
 /* Define to 1 to enable ZMQ functions */
 #define ENABLE_ZMQ 0
