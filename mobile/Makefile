@@ -25,6 +25,7 @@ EVENT_PTHREADS_IOS_LIBS:=-L$(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib -leven
 BDB_IOS_CFLAGS:=-I$(PROJ_ROOT_DIR)/../berkeleydb/db-18.1.25/build_unix/build-ios/include
 BDB_IOS_LIBS:=-L$(PROJ_ROOT_DIR)/../berkeleydb/db-18.1.25/build_unix/build-ios/lib -ldb_cxx-18.1 -ldb-18.1
 
+
 all: macos ios android
 
 
@@ -223,6 +224,23 @@ ios-lipo-3rd:
 	
 
 android:
+	cd $(PROJ_ROOT_DIR) && \
+			ANDROID_SYSROOT="$(ANDROID_NDK_ROOT)/platforms/android-27/arch-arm64" \
+			CFLAGS="--sysroot=$(ANDROID_SYSROOT)" \
+			CXXFLAGS="--sysroot=$(ANDROID_SYSROOT)" \
+			LDFLAGS="-pthread -lpthread" \
+			BOOST_CPPFLAGS="-std=c++11 -pthread" \
+			./configure \
+				--prefix=$(PROJ_ROOT_DIR)/build/$@ \
+				--host=arm-linux-androideabi \
+				--disable-wallet --without-gui --with-daemon=yes --with-utils=no \
+        --disable-tests --disable-bench --enable-asm=no \
+        --enable-shared=no --enable-static=yes --with-incompatible-bdb \
+        --disable-hardening --disable-ccache --disable-zmq --disable-man --without-miniupnpc \
+        --without-rapidcheck --without-qrencode -with-gui=no ac_cv_c_bigendian=no
+	-@$(MAKE) -C $(PROJ_ROOT_DIR) clean 2>&1 >/dev/null || true
+	make -j4 -C $(PROJ_ROOT_DIR)
+	make INSTALL_TARGET=$@ install
 
 
 clean:
