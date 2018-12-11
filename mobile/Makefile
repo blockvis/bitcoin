@@ -33,11 +33,19 @@ prerequisites:
 
 
 #
-# External prerequisites:
+# External iOS prerequisites:
 #		Boost for iOS: https://github.com/danoli3/ofxiOSBoost
-#		Openssl for iOS: https://github.com/krzyzanowskim/OpenSSL
+#		OpenSSL for iOS: https://github.com/krzyzanowskim/OpenSSL
 #		The libevent build script for iOS: https://gist.github.com/ursachec/6237515
 # 	BerkeleyDB for iOS: https://docs.oracle.com/cd/E17076_05/html/installation/build_unix_iphone.html
+#
+
+#
+# External Android prerequisites:
+#		Boost for Android: http://silverglint.com/boost-for-android/
+#		OpenSSL for Android: https://scottyab.com/2017/05/how-to-build-and-integrate-openssl-into-your-android-ndk-project/
+#		The libevent for Android: https://stackoverflow.com/questions/11655911/cross-compiling-libevent-for-android
+# 	BerkeleyDB for Android: https://docs.oracle.com/cd/E17076_05/html/installation/build_android_intro.html
 #
 
 
@@ -171,6 +179,7 @@ ios-framework: ios-lipo
 	cd $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/ && ln -sfh Versions/Current/BitcoinCore BitcoinCore
 	mkdir -p $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Modules
 	cp -a $(MAKEFILE_DIR)/ios/support/module.modulemap $(PROJ_ROOT_DIR)/build/ios-lipo/BitcoinCore.framework/Modules/module.modulemap
+
 
 ios-lipo: ios-lipo-3rd
 	mkdir -p $(PROJ_ROOT_DIR)/build/$@/{include,lib}
