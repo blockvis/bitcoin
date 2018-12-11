@@ -40,11 +40,15 @@ const std::function<std::string(const char*)> G_TRANSLATION_FUN = nullptr;
 }
 
 -(void)start {
-    [self start_];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self start_];
+    });
 }
 
 -(void)stop {
-    [self stop_];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self stop_];
+    });
 }
 
 -(void)start_ {
