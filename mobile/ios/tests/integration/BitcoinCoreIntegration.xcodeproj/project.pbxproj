@@ -421,7 +421,7 @@
 				SWIFT_VERSION = 4.2;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/BitcoinCore.framework/Headers",
-					"$SRCROOT)/../../../../../boost/ofxiOSBoost/libs/boost/include/",
+					"$SRCROOT)/../../../3rd/ios/boost/ofxiOSBoost/libs/boost/include/",
 				);
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -449,7 +449,7 @@
 				SWIFT_VERSION = 4.2;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/BitcoinCore.framework/Headers",
-					"$SRCROOT)/../../../../../boost/ofxiOSBoost/libs/boost/include/",
+					"$SRCROOT)/../../../3rd/ios/boost/ofxiOSBoost/libs/boost/include/",
 				);
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
