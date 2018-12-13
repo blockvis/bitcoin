@@ -1,2 +1,6 @@
 ios/tests/integration/BitcoinCoreIntegration.xcodeproj/project.xcworkspace/xcuserdata
 ios/tests/integration/BitcoinCoreIntegration.xcodeproj/xcuserdata
+3rd/ios/berkeleydb
+3rd/ios/boost
+3rd/ios/libevent
+3rd/ios/openssl

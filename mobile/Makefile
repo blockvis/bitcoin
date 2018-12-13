@@ -11,22 +11,22 @@ IOS_ARCHS_SIMULATOR:="x86_64"
 IOS_SDKROOT_DEVICE:=$(shell xcrun -sdk iphoneos --show-sdk-path)
 IOS_SDKROOT_SIMULATOR:=$(shell xcrun -sdk iphonesimulator --show-sdk-path)
 
-SSL_IOS_INCLUDES:=-I$(PROJ_ROOT_DIR)/../openssl/OpenSSl/include-ios
-SSL_IOS_LIBS:=-L$(PROJ_ROOT_DIR)/../openssl/OpenSSl/lib-ios -lssl
+SSL_IOS_INCLUDES:=-I$(MAKEFILE_DIR)/3rd/ios/openssl/OpenSSl/include-ios
+SSL_IOS_LIBS:=-L$(MAKEFILE_DIR)/3rd/ios/openssl/OpenSSl/lib-ios -lssl
 
-CRYPTO_IOS_INCLUDES:=-I$(PROJ_ROOT_DIR)/../openssl/OpenSSl/include-ios
-CRYPTO_IOS_LIBS:=-L$(PROJ_ROOT_DIR)/../openssl/OpenSSl/lib-ios -lcrypto
+CRYPTO_IOS_INCLUDES:=-I$(MAKEFILE_DIR)/3rd/ios/openssl/OpenSSl/include-ios
+CRYPTO_IOS_LIBS:=-L$(MAKEFILE_DIR)/3rd/ios/openssl/OpenSSl/lib-ios -lcrypto
 
-EVENT_IOS_INCLUDES:=-I$(PROJ_ROOT_DIR)/../libevent/libevent-dest-include/include
-EVENT_IOS_LIBS:=-L$(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib -levent -levent_core -levent_extra
-EVENT_PTHREADS_IOS_INCLUDES:=-I$(PROJ_ROOT_DIR)/../libevent/libevent-dest-include/include
-EVENT_PTHREADS_IOS_LIBS:=-L$(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib -levent_pthreads
+EVENT_IOS_INCLUDES:=-I$(MAKEFILE_DIR)/3rd/ios/libevent/libevent-dest-include/include
+EVENT_IOS_LIBS:=-L$(MAKEFILE_DIR)/3rd/ios/libevent/libevent-dest-lib -levent -levent_core -levent_extra
+EVENT_PTHREADS_IOS_INCLUDES:=-I$(MAKEFILE_DIR)/3rd/ios/libevent/libevent-dest-include/include
+EVENT_PTHREADS_IOS_LIBS:=-L$(MAKEFILE_DIR)/3rd/ios/libevent/libevent-dest-lib -levent_pthreads
 
-BDB_IOS_CFLAGS:=-I$(PROJ_ROOT_DIR)/../berkeleydb/db-18.1.25/build_unix/build-ios/include
-BDB_IOS_LIBS:=-L$(PROJ_ROOT_DIR)/../berkeleydb/db-18.1.25/build_unix/build-ios/lib -ldb_cxx-18.1 -ldb-18.1
+BDB_IOS_CFLAGS:=-I$(MAKEFILE_DIR)/3rd/ios/berkeleydb/db-18.1.25/build_unix/build-ios/include
+BDB_IOS_LIBS:=-L$(MAKEFILE_DIR)/3rd/ios/berkeleydb/db-18.1.25/build_unix/build-ios/lib -ldb_cxx-18.1 -ldb-18.1
 
 
-all: macos ios android
+all: macos ios
 
 
 prerequisites:
@@ -80,8 +80,8 @@ ios-device:
 			./configure \
 				--prefix=$(PROJ_ROOT_DIR)/build/$@ \
 				--host=aarch64-apple-darwin \
-				--with-boost=$(PROJ_ROOT_DIR)/../boost/ofxiOSBoost/libs/boost \
-				--with-boost-libdir=$(PROJ_ROOT_DIR)/../boost/ofxiOSBoost/libs/boost/ios \
+				--with-boost=$(MAKEFILE_DIR)/3rd/ios/boost/ofxiOSBoost/libs/boost \
+				--with-boost-libdir=$(MAKEFILE_DIR)/3rd/ios/boost/ofxiOSBoost/libs/boost/ios \
 				--with-boost-system=boost \
 				--with-boost-filesystem=boost \
 				--with-boost-thread=boost \
@@ -117,8 +117,8 @@ ios-simulator:
 			./configure \
 				--prefix=$(PROJ_ROOT_DIR)/build/$@ \
 				--host=aarch64-apple-darwin \
-				--with-boost=$(PROJ_ROOT_DIR)/../boost/ofxiOSBoost/libs/boost \
-				--with-boost-libdir=$(PROJ_ROOT_DIR)/../boost/ofxiOSBoost/libs/boost/ios \
+				--with-boost=$(MAKEFILE_DIR)/3rd/ios/boost/ofxiOSBoost/libs/boost \
+				--with-boost-libdir=$(MAKEFILE_DIR)/3rd/ios/boost/ofxiOSBoost/libs/boost/ios \
 				--with-boost-system=boost \
 				--with-boost-filesystem=boost \
 				--with-boost-thread=boost \
@@ -203,24 +203,24 @@ ios-lipo: ios-lipo-3rd
 
 
 ios-lipo-3rd:
-	lipo $(PROJ_ROOT_DIR)/../boost/ofxiOSBoost/libs/boost/ios/libboost.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libboost.a
-	lipo $(PROJ_ROOT_DIR)/../boost/ofxiOSBoost/libs/boost/ios/libboost.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libboost.a
-	lipo $(PROJ_ROOT_DIR)/../openssl/OpenSSL/lib-ios/libcrypto.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libcrypto.a
-	lipo $(PROJ_ROOT_DIR)/../openssl/OpenSSL/lib-ios/libcrypto.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libcrypto.a
-	lipo $(PROJ_ROOT_DIR)/../openssl/OpenSSL/lib-ios/libssl.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libssl.a
-	lipo $(PROJ_ROOT_DIR)/../openssl/OpenSSL/lib-ios/libssl.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libssl.a
-	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libevent.a
-	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libevent.a
-	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent_core.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libevent_core.a
-	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent_core.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libevent_core.a
-	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent_extra.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libevent_extra.a
-	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent_extra.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libevent_extra.a
-	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent_pthreads.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libevent_pthreads.a
-	lipo $(PROJ_ROOT_DIR)/../libevent/libevent-dest-lib/libevent_pthreads.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libevent_pthreads.a
-	lipo $(PROJ_ROOT_DIR)/../berkeleydb/db-18.1.25/build_unix/build-ios/lib/libdb-18.1.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libdb-18.1.a
-	lipo $(PROJ_ROOT_DIR)/../berkeleydb/db-18.1.25/build_unix/build-ios/lib/libdb-18.1.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libdb-18.1.a
-	lipo $(PROJ_ROOT_DIR)/../berkeleydb/db-18.1.25/build_unix/build-ios/lib/libdb_cxx-18.1.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libdb_cxx-18.1.a
-	lipo $(PROJ_ROOT_DIR)/../berkeleydb/db-18.1.25/build_unix/build-ios/lib/libdb_cxx-18.1.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libdb_cxx-18.1.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/boost/ofxiOSBoost/libs/boost/ios/libboost.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libboost.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/boost/ofxiOSBoost/libs/boost/ios/libboost.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libboost.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/openssl/OpenSSL/lib-ios/libcrypto.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libcrypto.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/openssl/OpenSSL/lib-ios/libcrypto.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libcrypto.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/openssl/OpenSSL/lib-ios/libssl.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libssl.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/openssl/OpenSSL/lib-ios/libssl.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libssl.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/libevent/libevent-dest-lib/libevent.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libevent.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/libevent/libevent-dest-lib/libevent.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libevent.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/libevent/libevent-dest-lib/libevent_core.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libevent_core.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/libevent/libevent-dest-lib/libevent_core.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libevent_core.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/libevent/libevent-dest-lib/libevent_extra.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libevent_extra.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/libevent/libevent-dest-lib/libevent_extra.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libevent_extra.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/libevent/libevent-dest-lib/libevent_pthreads.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libevent_pthreads.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/libevent/libevent-dest-lib/libevent_pthreads.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libevent_pthreads.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/berkeleydb/db-18.1.25/build_unix/build-ios/lib/libdb-18.1.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libdb-18.1.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/berkeleydb/db-18.1.25/build_unix/build-ios/lib/libdb-18.1.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libdb-18.1.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/berkeleydb/db-18.1.25/build_unix/build-ios/lib/libdb_cxx-18.1.a -thin arm64 -output $(PROJ_ROOT_DIR)/build/ios-device/lib/libdb_cxx-18.1.a
+	lipo $(MAKEFILE_DIR)/3rd/ios/berkeleydb/db-18.1.25/build_unix/build-ios/lib/libdb_cxx-18.1.a -thin x86_64 -output $(PROJ_ROOT_DIR)/build/ios-simulator/lib/libdb_cxx-18.1.a
 	
 
 android:
