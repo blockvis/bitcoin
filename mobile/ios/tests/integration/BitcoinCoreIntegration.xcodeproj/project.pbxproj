@@ -10,6 +10,14 @@
 		C008436B21B67FCF00529F17 /* BitcoinCoreWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = C008436A21B67FCF00529F17 /* BitcoinCoreWrapper.mm */; };
 		C008437121B6840400529F17 /* BitcoinCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C008437021B6840400529F17 /* BitcoinCore.framework */; };
 		C008437221B6840400529F17 /* BitcoinCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C008437021B6840400529F17 /* BitcoinCore.framework */; };
+		C008437921C3AB5700529F17 /* JsonSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C008437421C3AB5700529F17 /* JsonSerializer.swift */; };
+		C008437A21C3AB5700529F17 /* JsonSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C008437421C3AB5700529F17 /* JsonSerializer.swift */; };
+		C008437F21C3AB5700529F17 /* IJsonSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C008437721C3AB5700529F17 /* IJsonSerializer.swift */; };
+		C008438021C3AB5700529F17 /* IJsonSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C008437721C3AB5700529F17 /* IJsonSerializer.swift */; };
+		C008438521C3AB6100529F17 /* RestClientFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C008438421C3AB6100529F17 /* RestClientFactory.swift */; };
+		C008438621C3AB6100529F17 /* RestClientFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C008438421C3AB6100529F17 /* RestClientFactory.swift */; };
+		C008438821C3ABAE00529F17 /* IRestClientFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C008438721C3ABAE00529F17 /* IRestClientFactory.swift */; };
+		C008438921C3ABAE00529F17 /* IRestClientFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C008438721C3ABAE00529F17 /* IRestClientFactory.swift */; };
 		C0C8EAF621B1671C006EE983 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C8EAF521B1671C006EE983 /* AppDelegate.swift */; };
 		C0C8EAF821B1671C006EE983 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C8EAF721B1671C006EE983 /* MainViewController.swift */; };
 		C0C8EAFB21B1671C006EE983 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C0C8EAF921B1671C006EE983 /* Main.storyboard */; };
@@ -32,6 +40,10 @@
 		C008436A21B67FCF00529F17 /* BitcoinCoreWrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BitcoinCoreWrapper.mm; sourceTree = "<group>"; };
 		C008436C21B67FDB00529F17 /* BitcoinCoreWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BitcoinCoreWrapper.h; sourceTree = "<group>"; };
 		C008437021B6840400529F17 /* BitcoinCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BitcoinCore.framework; sourceTree = "<group>"; };
+		C008437421C3AB5700529F17 /* JsonSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JsonSerializer.swift; sourceTree = "<group>"; };
+		C008437721C3AB5700529F17 /* IJsonSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IJsonSerializer.swift; sourceTree = "<group>"; };
+		C008438421C3AB6100529F17 /* RestClientFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestClientFactory.swift; sourceTree = "<group>"; };
+		C008438721C3ABAE00529F17 /* IRestClientFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IRestClientFactory.swift; sourceTree = "<group>"; };
 		C07AF29321B167BB00B1A8F4 /* BitcoinCoreIntegration-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BitcoinCoreIntegration-Bridging-Header.h"; sourceTree = "<group>"; };
 		C07AF29421B167BB00B1A8F4 /* BitcoinCoreIntegrationTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BitcoinCoreIntegrationTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		C0C8EAF221B1671C006EE983 /* BitcoinCoreIntegration.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BitcoinCoreIntegration.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -69,6 +81,8 @@
 		C008436721B67F5100529F17 /* Swift */ = {
 			isa = PBXGroup;
 			children = (
+				C008437321C3AB5700529F17 /* Json */,
+				C008438321C3AB6100529F17 /* Rest */,
 				C0C8EAF521B1671C006EE983 /* AppDelegate.swift */,
 				C0C8EAF721B1671C006EE983 /* MainViewController.swift */,
 			);
@@ -82,6 +96,24 @@
 				C008436A21B67FCF00529F17 /* BitcoinCoreWrapper.mm */,
 			);
 			path = ObjC;
+			sourceTree = "<group>";
+		};
+		C008437321C3AB5700529F17 /* Json */ = {
+			isa = PBXGroup;
+			children = (
+				C008437721C3AB5700529F17 /* IJsonSerializer.swift */,
+				C008437421C3AB5700529F17 /* JsonSerializer.swift */,
+			);
+			path = Json;
+			sourceTree = "<group>";
+		};
+		C008438321C3AB6100529F17 /* Rest */ = {
+			isa = PBXGroup;
+			children = (
+				C008438721C3ABAE00529F17 /* IRestClientFactory.swift */,
+				C008438421C3AB6100529F17 /* RestClientFactory.swift */,
+			);
+			path = Rest;
 			sourceTree = "<group>";
 		};
 		C07AF28F21B1674500B1A8F4 /* Frameworks */ = {
@@ -238,9 +270,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C008437921C3AB5700529F17 /* JsonSerializer.swift in Sources */,
 				C0C8EAF821B1671C006EE983 /* MainViewController.swift in Sources */,
+				C008437F21C3AB5700529F17 /* IJsonSerializer.swift in Sources */,
+				C008438521C3AB6100529F17 /* RestClientFactory.swift in Sources */,
 				C008436B21B67FCF00529F17 /* BitcoinCoreWrapper.mm in Sources */,
 				C0C8EAF621B1671C006EE983 /* AppDelegate.swift in Sources */,
+				C008438821C3ABAE00529F17 /* IRestClientFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,7 +284,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C008438021C3AB5700529F17 /* IJsonSerializer.swift in Sources */,
+				C008438921C3ABAE00529F17 /* IRestClientFactory.swift in Sources */,
+				C008437A21C3AB5700529F17 /* JsonSerializer.swift in Sources */,
 				C0C8EB0B21B1671C006EE983 /* BitcoinCoreIntegrationTests.swift in Sources */,
+				C008438621C3AB6100529F17 /* RestClientFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

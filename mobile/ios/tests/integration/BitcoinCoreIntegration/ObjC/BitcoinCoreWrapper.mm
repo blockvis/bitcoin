@@ -88,6 +88,8 @@ const std::function<std::string(const char*)> G_TRANSLATION_FUN = nullptr;
         "-rpcthreads=2",
         "-server",
         "-testnet",
+        "-rpcuser=bitcoin",
+        "-rpcpassword=core"
     };
     const char** argv= reinterpret_cast<const char**>(&args[0]);
     int argc = (int)args.size();

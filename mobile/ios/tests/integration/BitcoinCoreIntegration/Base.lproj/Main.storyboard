@@ -36,21 +36,21 @@
                             </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="PXl-0O-73w">
                                 <rect key="frame" x="16" y="203" width="343" height="444"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="0.97670775232403706" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="http://user:pwd@127.0.0.1:8332/" borderStyle="roundedRect" placeholder="json-rpc endpoint" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GIa-3x-I8j">
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="http://bitcoin:core@127.0.0.1:8332/" borderStyle="roundedRect" placeholder="json-rpc endpoint" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GIa-3x-I8j">
                                 <rect key="frame" x="16" y="89" width="343" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="getinfo" borderStyle="roundedRect" placeholder="method name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="At9-zc-0XK">
                                 <rect key="frame" x="16" y="127" width="343" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -59,13 +59,19 @@
                                 <rect key="frame" x="16" y="165" width="90" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Call method"/>
+                                <connections>
+                                    <action selector="onCallMethodButtonTouchUpInside:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ArE-Ls-fS2"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="callMethodButton" destination="ihg-CH-HO7" id="9iA-Tx-qIF"/>
+                        <outlet property="endpointTextField" destination="GIa-3x-I8j" id="vpI-bQ-o1Q"/>
                         <outlet property="logTextView" destination="PXl-0O-73w" id="hZN-UM-uS0"/>
+                        <outlet property="methodTextField" destination="At9-zc-0XK" id="pnp-tK-lbj"/>
                         <outlet property="startButton" destination="CLa-IE-rXd" id="JDy-Ft-ZDm"/>
                         <outlet property="stopButton" destination="8GF-F8-ZLm" id="2hr-Yd-JRY"/>
                     </connections>
