@@ -53,26 +53,58 @@ class MainViewController: UIViewController, BitcoinCoreWrapperDelegate {
         let headers: [String: String] = [
             "Content-Type": "application/json-rpc"
         ]
-        let body = JsonRpcRequest(methodTextField.text ?? "")
+        let rpcParams = extractRpcParams()
+        let body = JsonRpcRequest(extractMethodName(), rpcParams)
         restClient?.post(responseType, endpoint: "/", params: params, body: body, headers: headers, completion: { data, response, err in
             guard err == nil else {
-                self.appendToLogView(err!.localizedDescription)
+                self.appendToLogView("Error: \(err!.localizedDescription)")
                 return
             }
             guard data != nil else {
-                self.appendToLogView("No Data")
+                self.appendToLogView("Error: No Data")
                 return
             }
             guard data!.error == nil else {
-                self.appendToLogView("\(data!.error!.code) - \(data!.error!.message)")
+                self.appendToLogView("Error: \(data!.error!.code) - \(data!.error!.message)")
                 return
             }
             guard data?.result != nil else {
-                self.appendToLogView("No Result")
+                self.appendToLogView("Error: No Result")
                 return
             }
             self.appendToLogView(data!.result!.toString())
         })
+    }
+    
+    private func extractMethodName() -> String {
+        let methodText = methodTextField.text ?? ""
+        let methodTextComponents = methodText.components(separatedBy: " ")
+        
+        guard methodTextComponents.count > 0 else {
+            return ""
+        }
+        
+        let methodName = methodTextComponents[0]
+        
+        return methodName
+    }
+    
+    private func extractRpcParams() -> [String]? {
+        var params = [String]()
+        
+        let paramsText = methodTextField.text ?? ""
+        let paramsTextComponents = paramsText.components(separatedBy: " ")
+        
+        guard paramsTextComponents.count > 1 else {
+            return params
+        }
+        
+        for i in 1..<paramsTextComponents.count {
+            let paramDecl = paramsTextComponents[i]
+            params.append(paramDecl)
+        }
+        
+        return params
     }
     
     private func appendToLogView(_ str: String) {
@@ -82,18 +114,28 @@ class MainViewController: UIViewController, BitcoinCoreWrapperDelegate {
         }
     }
     
+    func bitcoinCoreStarted() {
+        appendToLogView("INFO: Server started.")
+    }
+    
+    func bitcoinCoreStopped() {
+        appendToLogView("INFO: Server stopped.")
+    }
+    
     deinit {
     }
 }
 
 fileprivate class JsonRpcRequest : Encodable {
     var jsonrpc: String = "1.0"
-    var id: String = "1"
-    var method: String = ""
-    var params: [String: String]?
+    var id: String
+    var method: String
+    var params: [String]?
     
-    init(_ method: String) {
+    init(_ method: String, _ params: [String]?) {
+        self.id = NSUUID().uuidString
         self.method = method
+        self.params = params
     }
 }
 

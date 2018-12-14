@@ -170,12 +170,14 @@ const std::function<std::string(const char*)> G_TRANSLATION_FUN = nullptr;
     if (!fRet) {
         Interrupt();
     } else {
+        [_delegate bitcoinCoreStarted];
         while (!ShutdownRequested()) {
             MilliSleep(200);
         }
         Interrupt();
     }
     Shutdown(interfaces);
+    [_delegate bitcoinCoreStopped];
 }
 
 -(void)stop_ {
