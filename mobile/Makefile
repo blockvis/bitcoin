@@ -43,6 +43,9 @@ EVENT_ANDROID_LIBS:=-L$(MAKEFILE_DIR)/3rd/android/libevent/build-arm64/lib -leve
 EVENT_PTHREADS_ANDROID_INCLUDES:=-I$(MAKEFILE_DIR)/3rd/android/libevent/build-arm64/include
 EVENT_PTHREADS_ANDROID_LIBS:=-L$(MAKEFILE_DIR)/3rd/android/libevent/build-arm64/lib -levent_pthreads
 
+BDB_ANDROID_CFLAGS:=-I$(MAKEFILE_DIR)/3rd/android/berkeleydb/db-18.1.25/build_unix/build-android/include
+BDB_ANDROID_LIBS:=-L$(MAKEFILE_DIR)/3rd/android/berkeleydb/db-18.1.25/build_unix/build-android/lib -ldb_cxx-18.1 -ldb-18.1
+
 
 all: macos ios
 
@@ -266,11 +269,11 @@ android:
 				--host=aarch64-linux-android \
 				--with-boost=$(MAKEFILE_DIR)/3rd/android/boost/boost_for_android/build/boost/1.69.0/include \
 				--with-boost-libdir=$(MAKEFILE_DIR)/3rd/android/boost/boost_for_android/build/boost/1.69.0/libs/llvm/arm64-v8a  \
-				-with-boost-system=boost_system \
+				--with-boost-system=boost_system \
 				--with-boost-filesystem=boost_filesystem \
 				--with-boost-thread=boost_thread \
 				--with-boost-chrono=boost_chrono \
-				--disable-wallet --without-gui --with-daemon=yes --with-utils=no \
+				--without-gui --with-daemon=yes --with-utils=no \
         		--disable-tests --disable-bench --enable-asm=no \
         		--enable-shared=no --enable-static=yes --with-incompatible-bdb \
         		--disable-hardening --disable-ccache --disable-zmq --disable-man --without-miniupnpc \
@@ -282,7 +285,9 @@ android:
 				EVENT_CFLAGS="$(EVENT_ANDROID_INCLUDES)" \
 				EVENT_LIBS="$(EVENT_ANDROID_LIBS)" \
 				EVENT_PTHREADS_CFLAGS="$(EVENT_PTHREADS_ANDROID_INCLUDES)" \
-				EVENT_PTHREADS_LIBS="$(EVENT_PTHREADS_ANDROID_LIBS)"
+				EVENT_PTHREADS_LIBS="$(EVENT_PTHREADS_ANDROID_LIBS)" \
+				BDB_CFLAGS="$(BDB_ANDROID_CFLAGS)" \
+				BDB_LIBS="$(BDB_ANDROID_LIBS)"
 	-@$(MAKE) -C $(PROJ_ROOT_DIR) clean 2>&1 >/dev/null || true
 	make -j4 -C $(PROJ_ROOT_DIR)
 	make INSTALL_TARGET=$@ install

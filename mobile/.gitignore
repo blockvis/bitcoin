@@ -7,3 +7,4 @@ ios/tests/integration/BitcoinCoreIntegration.xcodeproj/xcuserdata
 3rd/android/boost
 3rd/android/libevent
 3rd/android/openssl
+3rd/android/berkeleydb
