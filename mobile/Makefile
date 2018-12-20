@@ -5,6 +5,9 @@
 MAKEFILE_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 PROJ_ROOT_DIR:=$(realpath $(MAKEFILE_DIR)/..)
 
+#
+# iOS
+#
 IOS_ARCHS_DEVICE:="arm64"
 IOS_ARCHS_SIMULATOR:="x86_64"
 
@@ -26,11 +29,26 @@ BDB_IOS_CFLAGS:=-I$(MAKEFILE_DIR)/3rd/ios/berkeleydb/db-18.1.25/build_unix/build
 BDB_IOS_LIBS:=-L$(MAKEFILE_DIR)/3rd/ios/berkeleydb/db-18.1.25/build_unix/build-ios/lib -ldb_cxx-18.1 -ldb-18.1
 
 
+#
+# Android
+#
+SSL_ANDROID_INCLUDES:=-I$(MAKEFILE_DIR)/3rd/android/openssl/OpenSSL-For-Android/openssl-1.0.2j/include/
+SSL_ANDROID_LIBS:=-L$(MAKEFILE_DIR)/3rd/android/openssl/OpenSSL-For-Android/openssl-1.0.2j/lib/arm64-v8a/ -lcrypto
+
+CRYPTO_ANDROID_INCLUDES:=-I$(MAKEFILE_DIR)/3rd/android/openssl/OpenSSL-For-Android/openssl-1.0.2j/include/
+CRYPTO_ANDROID_LIBS:=-L$(MAKEFILE_DIR)/3rd/android/openssl/OpenSSL-For-Android/openssl-1.0.2j/lib/arm64-v8a/ -lcrypto
+
+EVENT_ANDROID_INCLUDES:=-I$(MAKEFILE_DIR)/3rd/android/libevent/build-arm64/include
+EVENT_ANDROID_LIBS:=-L$(MAKEFILE_DIR)/3rd/android/libevent/build-arm64/lib -levent -levent_core -levent_extra
+EVENT_PTHREADS_ANDROID_INCLUDES:=-I$(MAKEFILE_DIR)/3rd/android/libevent/build-arm64/include
+EVENT_PTHREADS_ANDROID_LIBS:=-L$(MAKEFILE_DIR)/3rd/android/libevent/build-arm64/lib -levent_pthreads
+
+
 all: macos ios
 
 
 prerequisites:
-	brew install automake berkeley-db4 libtool boost miniupnpc openssl pkg-config protobuf python qt libevent qrencode
+	brew install automake berkeley-db4 libtool boost miniupnpc openssl pkg-config protobuf python libevent qrencode
 
 
 #
@@ -38,15 +56,20 @@ prerequisites:
 #		Boost for iOS: https://github.com/danoli3/ofxiOSBoost
 #		OpenSSL for iOS: https://github.com/krzyzanowskim/OpenSSL
 #		The libevent build script for iOS: https://gist.github.com/ursachec/6237515
-# 	BerkeleyDB for iOS: https://docs.oracle.com/cd/E17076_05/html/installation/build_unix_iphone.html
+# 		BerkeleyDB for iOS: https://docs.oracle.com/cd/E17076_05/html/installation/build_unix_iphone.html
 #
 
 #
 # External Android prerequisites:
 #		Boost for Android: http://silverglint.com/boost-for-android/
+#			and https://github.com/dec1/Boost-for-Android
+#			and https://github.com/moritz-wundke/Boost-for-Android
 #		OpenSSL for Android: https://scottyab.com/2017/05/how-to-build-and-integrate-openssl-into-your-android-ndk-project/
+#			and https://github.com/pstanoev/OpenSSL-For-Android
 #		The libevent for Android: https://stackoverflow.com/questions/11655911/cross-compiling-libevent-for-android
-# 	BerkeleyDB for Android: https://docs.oracle.com/cd/E17076_05/html/installation/build_android_intro.html
+# 		BerkeleyDB for Android: https://docs.oracle.com/cd/E17076_05/html/installation/build_android_intro.html
+#
+#	Also https://github.com/greenaddress/bitcoin_ndk
 #
 
 
@@ -225,19 +248,41 @@ ios-lipo-3rd:
 
 android:
 	cd $(PROJ_ROOT_DIR) && \
+			PATH=/opt/aarch64-linux-android-clang/bin:${PATH} \
+			AR=/opt/aarch64-linux-android-clang/bin/aarch64-linux-android-ar \
+			AS=/opt/aarch64-linux-android-clang/bin/aarch64-linux-android-clang \
+			CC=/opt/aarch64-linux-android-clang/bin/aarch64-linux-android-clang \
+			CXX=/opt/aarch64-linux-android-clang/bin/aarch64-linux-android-clang++ \
+			STRIP=/opt/aarch64-linux-android-clang/bin/aarch64-linux-android-strip \
+			RANLIB=/opt/aarch64-linux-android-clang/bin/aarch64-linux-android-ranlib \
 			ANDROID_SYSROOT="$(ANDROID_NDK_ROOT)/platforms/android-27/arch-arm64" \
-			CFLAGS="--sysroot=$(ANDROID_SYSROOT)" \
-			CXXFLAGS="--sysroot=$(ANDROID_SYSROOT)" \
-			LDFLAGS="-pthread -lpthread" \
+			CFLAGS=" -m64" \
+			CXXFLAGS=" -m64" \
+			LDFLAGS="-pthread -pie -static-libstdc++ -L$(MAKEFILE_DIR)/3rd/android/boost/boost_for_android/build/boost/1.69.0/libs/llvm/arm64-v8a" \
 			BOOST_CPPFLAGS="-std=c++11 -pthread" \
+			TOOLCHAIN=aarch64-linux-android-clang \
 			./configure \
 				--prefix=$(PROJ_ROOT_DIR)/build/$@ \
-				--host=arm-linux-androideabi \
+				--host=aarch64-linux-android \
+				--with-boost=$(MAKEFILE_DIR)/3rd/android/boost/boost_for_android/build/boost/1.69.0/include \
+				--with-boost-libdir=$(MAKEFILE_DIR)/3rd/android/boost/boost_for_android/build/boost/1.69.0/libs/llvm/arm64-v8a  \
+				-with-boost-system=boost_system \
+				--with-boost-filesystem=boost_filesystem \
+				--with-boost-thread=boost_thread \
+				--with-boost-chrono=boost_chrono \
 				--disable-wallet --without-gui --with-daemon=yes --with-utils=no \
-        --disable-tests --disable-bench --enable-asm=no \
-        --enable-shared=no --enable-static=yes --with-incompatible-bdb \
-        --disable-hardening --disable-ccache --disable-zmq --disable-man --without-miniupnpc \
-        --without-rapidcheck --without-qrencode -with-gui=no ac_cv_c_bigendian=no
+        		--disable-tests --disable-bench --enable-asm=no \
+        		--enable-shared=no --enable-static=yes --with-incompatible-bdb \
+        		--disable-hardening --disable-ccache --disable-zmq --disable-man --without-miniupnpc \
+        		--without-rapidcheck --without-qrencode -with-gui=no ac_cv_c_bigendian=no \
+				SSL_CFLAGS="$(SSL_ANDROID_INCLUDES)" \
+				SSL_LIBS="$(SSL_ANDROID_LIBS)" \
+				CRYPTO_CFLAGS="$(CRYPTO_ANDROID_INCLUDES)" \
+				CRYPTO_LIBS="$(CRYPTO_ANDROID_LIBS)" \
+				EVENT_CFLAGS="$(EVENT_ANDROID_INCLUDES)" \
+				EVENT_LIBS="$(EVENT_ANDROID_LIBS)" \
+				EVENT_PTHREADS_CFLAGS="$(EVENT_PTHREADS_ANDROID_INCLUDES)" \
+				EVENT_PTHREADS_LIBS="$(EVENT_PTHREADS_ANDROID_LIBS)"
 	-@$(MAKE) -C $(PROJ_ROOT_DIR) clean 2>&1 >/dev/null || true
 	make -j4 -C $(PROJ_ROOT_DIR)
 	make INSTALL_TARGET=$@ install

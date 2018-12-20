@@ -4,4 +4,6 @@ ios/tests/integration/BitcoinCoreIntegration.xcodeproj/xcuserdata
 3rd/ios/boost
 3rd/ios/libevent
 3rd/ios/openssl
-ios/tests/integration/BitcoinCore.framework/Versions/A/BitcoinCore
+3rd/android/boost
+3rd/android/libevent
+3rd/android/openssl
