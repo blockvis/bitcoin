@@ -47,7 +47,7 @@ BDB_ANDROID_CFLAGS:=-I$(MAKEFILE_DIR)/3rd/android/berkeleydb/db-18.1.25/build_un
 BDB_ANDROID_LIBS:=-L$(MAKEFILE_DIR)/3rd/android/berkeleydb/db-18.1.25/build_unix/build-android/lib -ldb_cxx-18.1 -ldb-18.1
 
 
-all: macos ios
+all: macos ios android
 
 
 prerequisites:
@@ -85,7 +85,7 @@ macos:
 				--without-gui --with-daemon=yes --with-utils=no \
         --disable-tests --disable-bench --enable-asm=no \
         --enable-shared=no --enable-static=yes --with-incompatible-bdb \
-        --disable-hardening --disable-ccache --disable-zmq --disable-man --without-miniupnpc \
+        --disable-hardening --disable-ccache --disable-man --without-miniupnpc \
         --without-rapidcheck --without-qrencode -with-gui=no
 	-@$(MAKE) -C $(PROJ_ROOT_DIR) clean 2>&1 >/dev/null || true
 	make -j4 -C $(PROJ_ROOT_DIR)
@@ -115,7 +115,7 @@ ios-device:
 				--without-gui --with-daemon=yes --with-utils=no \
         --disable-tests --disable-bench --enable-asm=no \
         --enable-shared=no --enable-static=yes --with-incompatible-bdb \
-        --disable-hardening --disable-ccache --disable-zmq --disable-man --without-miniupnpc \
+        --disable-hardening --disable-ccache --disable-man --without-miniupnpc \
         --without-rapidcheck --without-qrencode -with-gui=no ac_cv_c_bigendian=no \
 				SSL_CFLAGS="$(SSL_IOS_INCLUDES)" \
 				SSL_LIBS="$(SSL_IOS_LIBS)" \
@@ -152,7 +152,7 @@ ios-simulator:
 				--without-gui --with-daemon=yes --with-utils=no \
         --disable-tests --disable-bench --enable-asm=no \
         --enable-shared=no --enable-static=yes --with-incompatible-bdb \
-        --disable-hardening --disable-ccache --disable-zmq --disable-man --without-miniupnpc \
+        --disable-hardening --disable-ccache --disable-man --without-miniupnpc \
         --without-rapidcheck --without-qrencode -with-gui=no ac_cv_c_bigendian=no \
 				SSL_CFLAGS="$(SSL_IOS_INCLUDES)" \
 				SSL_LIBS="$(SSL_IOS_LIBS)" \
@@ -276,7 +276,7 @@ android:
 				--without-gui --with-daemon=yes --with-utils=no \
         		--disable-tests --disable-bench --enable-asm=no \
         		--enable-shared=no --enable-static=yes --with-incompatible-bdb \
-        		--disable-hardening --disable-ccache --disable-zmq --disable-man --without-miniupnpc \
+        		--disable-hardening --disable-ccache --disable-man --without-miniupnpc \
         		--without-rapidcheck --without-qrencode -with-gui=no ac_cv_c_bigendian=no \
 				SSL_CFLAGS="$(SSL_ANDROID_INCLUDES)" \
 				SSL_LIBS="$(SSL_ANDROID_LIBS)" \
