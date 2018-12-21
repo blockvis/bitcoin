@@ -259,8 +259,8 @@ android:
 			STRIP=/opt/aarch64-linux-android-clang/bin/aarch64-linux-android-strip \
 			RANLIB=/opt/aarch64-linux-android-clang/bin/aarch64-linux-android-ranlib \
 			ANDROID_SYSROOT="$(ANDROID_NDK_ROOT)/platforms/android-27/arch-arm64" \
-			CFLAGS=" -m64" \
-			CXXFLAGS=" -m64" \
+			CFLAGS="-m64" \
+			CXXFLAGS="-m64" \
 			LDFLAGS="-pthread -pie -static-libstdc++ -L$(MAKEFILE_DIR)/3rd/android/boost/boost_for_android/build/boost/1.69.0/libs/llvm/arm64-v8a" \
 			BOOST_CPPFLAGS="-std=c++11 -pthread" \
 			TOOLCHAIN=aarch64-linux-android-clang \
